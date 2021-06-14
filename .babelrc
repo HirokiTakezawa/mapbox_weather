@@ -1,0 +1,29 @@
+{
+  "plugins": [
+    [
+      "react-intl-auto",
+      {
+        "removePrefix": "src/",
+        "filebase": false
+      }
+    ],
+    [
+      "module-resolver",
+      {
+        "root": [
+          "./src"
+        ],
+        "alias": {
+          "~": "./src"
+        }
+      }
+    ]
+  ],
+  "presets": [
+    "react-app",
+    ["@babel/preset-env", {
+      "useBuiltIns": "entry",
+      "corejs": 3
+   }]
+  ]
+}
