@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import './App.css';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { createLayer } from './3dLayer';
+import { createLayer } from '~/components/layers/3dLayer';
+import { ScatterplotLayer, ColumnLayer } from '@deck.gl/layers';
+import { MapboxLayer } from '@deck.gl/mapbox';
+// import { point } from './rain_point';
+// import { CPUGridLayer } from '@deck.gl/aggregation-layers';
+import point_json from './point.json';
+import point_time_json from './point_time.json';
 
 const styles = () => ({
   root: {
@@ -34,7 +39,7 @@ class App extends Component {
       container: this.container,
       style: 'mapbox://styles/hiroki-beguru/ckotmckvz2mqx18qbu55ovma9',
       center: [140.1831, 35.55],
-      zoom: 16,
+      zoom: 10,
       antialias: true,
     });
 
@@ -91,7 +96,7 @@ class App extends Component {
       this.map.addSource('m_color', {
         type: 'raster',
         tiles: [
-          'https://www.jma.go.jp/bosai/jmatile/data/nowc/20210611051000/none/20210611051000/surf/hrpns/{z}/{x}/{y}.png',
+          'https://www.jma.go.jp/bosai/jmatile/data/nowc/20210614015000/none/20210614015000/surf/hrpns/{z}/{x}/{y}.png',
         ],
         tileSize: 256,
         maxzoom: 9,
@@ -141,6 +146,76 @@ class App extends Component {
       //   createLayer(140.184, 35.551111, 'id_3'),
       //   'waterway-label'
       // );
+      const myDeckLayer = new MapboxLayer({
+        id: 'my-scatterplot',
+        type: ScatterplotLayer,
+        data: [{ position: [140.1831, 35.55], size: 1000 }],
+        getPosition: (d) => d.position,
+        getRadius: (d) => d.size,
+        getColor: [255, 0, 0],
+      });
+      console.log('aaaa');
+      console.log(Object.values(point_json.data));
+      console.log(Object.values(point_time_json.data));
+      for (const key in point_time_json.data) {
+        if (point_json.data[key]) {
+          point_json.data[key] = {
+            ...point_time_json.data[key],
+            ...point_json.data[key],
+          };
+          console.log(point_json.data[key]);
+        }
+      }
+      const cpuGridLayer = new MapboxLayer({
+        id: 'column-layer',
+        type: ColumnLayer,
+        // data: [
+        //   {
+        //     value: 1,
+        //     centroid: [140.1831, 35.55],
+        //   },
+        // ],
+        data: Object.values(point_json.data),
+        // angle: 0,
+        // coverage: 1,
+        diskResolution: 12,
+        elevationScale: 100,
+        extruded: true,
+        // filled: true,
+        getElevation: (d) => d.PRCRIN_10MIN * 10,
+        getFillColor: (d) => [48, 128, d.PRCRIN_10MIN * 255, 255],
+        getLineColor: [0, 0, 0],
+        getLineWidth: 40,
+        getPosition: (d) => [d.LOND, d.LATD],
+        // lineWidthMaxPixels: Number.MAX_SAFE_INTEGER,
+        // lineWidthMinPixels: 0,
+        // lineWidthScale: 1,
+        // lineWidthUnits: 'meters',
+        // material: true,
+        // offset: [0, 0],
+        radius: 250,
+        // stroked: false,
+        // vertices: null,
+        // wireframe: false,
+
+        /* props inherited from Layer class */
+
+        // autoHighlight: false,
+        // coordinateOrigin: [0, 0, 0],
+        // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+        // highlightColor: [0, 0, 128, 128],
+        // modelMatrix: null,
+        // opacity: 1,
+        pickable: true,
+        // visible: true,
+        // wrapLongitude: false,
+      });
+
+      window.setTimeout(() => {
+        this.map.addLayer(myDeckLayer);
+        // console.log(myDeckLayer);
+        this.map.addLayer(cpuGridLayer);
+      }, 100);
     });
     this.map.addControl(new mapboxgl.NavigationControl());
   }

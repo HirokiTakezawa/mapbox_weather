@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './DeckApp';
+import App from '~/containers/DeckApp';
 import reportWebVitals from './reportWebVitals';
 import mapboxgl from 'mapbox-gl';
 

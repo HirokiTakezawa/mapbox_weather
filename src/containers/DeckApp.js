@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import './App.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Map from './DeckMap';
+import Map from '~/containers/Map/DeckMap';
 
 const styles = () => ({
   root: {
