@@ -5,8 +5,7 @@ import App from './DeckApp';
 import reportWebVitals from './reportWebVitals';
 import mapboxgl from 'mapbox-gl';
 
-mapboxgl.accessToken =
-  'pk.eyJ1IjoiaGlyb2tpLWJlZ3VydSIsImEiOiJja290amUxaXAwYWFvMnZucDBwbXU4bjJsIn0.Ad-0OFDOlqay5Vphsqf-HA';
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 ReactDOM.render(
   <React.StrictMode>
